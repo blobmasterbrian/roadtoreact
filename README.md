@@ -89,4 +89,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 `yarn add --dev flow-bin` - install flow
 `yarn add --dev eslint-plugin-flowtype` - install static linting for flow via babel
 `yarn add --dev eslint-plugin-react` - install eslint react plugin
+`eslint .` - run eslint linting
 `yarn flow status` - run flow typechecking

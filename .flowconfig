@@ -11,4 +11,5 @@
 [strict]
 
 [untyped]
+**.test.js
 .*/node_modules/.*
