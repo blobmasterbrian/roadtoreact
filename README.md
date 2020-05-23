@@ -83,4 +83,8 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 `yarn start` - start the react app
 `yarn test` - run tests
 `yarn build` -  builds the production application
-
+`yarn add --dev eslint` - install eslint
+`yarn add --dev babel-eslint` - install babel eslint
+`yarn add --dev @babel/core @babel/cli @babel/preset-flow` - install babel tools
+`yarn add --dev flow-bin` - install flow
+`yarn add --dev eslint-plugin-flowtype` - install static linting for flow via babel

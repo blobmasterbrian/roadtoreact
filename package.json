@@ -30,5 +30,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-flow": "^7.9.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.1.0",
+    "eslint-plugin-flowtype": "^5.1.0",
+    "flow-bin": "^0.125.1"
   }
 }
