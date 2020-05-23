@@ -80,3 +80,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 `yarn install react` - install react
 `yarn add create-react-app` - install create-react-app cli tool
 `yarn create react-app .` - initialize react app in current directory
+`yarn start` - start the react app
+`yarn test` - run tests
+`yarn build` -  builds the production application
+
