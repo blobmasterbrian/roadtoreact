@@ -5,7 +5,7 @@ import "./App.css";
 import type { Element } from "react";
 
 function App(): Element<"div"> {
-  var helloWorld: string = "Welcome to the Road to learn React";
+  const helloWorld: string = "Welcome to the Road to learn React";
   return (
     <div className="App">
       <h2>{helloWorld}</h2>
