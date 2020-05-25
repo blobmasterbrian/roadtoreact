@@ -37,18 +37,16 @@ function App(): Element<"div"> {
   return (
     <div className="App">
       <h2>{helloWorld}</h2>
-      {list.map((book: Book): Element<"div"> => {
-        return (
-          <div key={book.objectID}>
-            <span>
-              <a href={book.url}>{book.title}</a>
-            </span>
-            <span> {book.author} </span>
-            <span> {book.num_comments} </span>
-            <span> {book.points} </span>
-          </div>
-        );
-      })}
+      {list.map((book: Book): Element<"div"> => (
+        <div key={book.objectID}>
+          <span>
+            <a href={book.url}>{book.title}</a>
+          </span>
+          <span> {book.author} </span>
+          <span> {book.num_comments} </span>
+          <span> {book.points} </span>
+        </div>
+      ))}
     </div>
   );
 }
