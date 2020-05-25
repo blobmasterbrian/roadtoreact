@@ -44,6 +44,15 @@ function App(props: Props): Element<"div"> {
     (((Array<Book>) => Array<Book>) | Array<Book>) => void
   ] = useState(initialList);
 
+  function onDismiss(id: number) {
+    const hasDifferentId: Book => boolean = (book: Book): boolean => {
+      return book.objectID !== id;
+    };
+
+    const updatedList: Array<Book> = list.filter(hasDifferentId);
+    setList(updatedList);
+  }
+
   return (
     <div className="App">
       <h2>{greeting}</h2>
@@ -55,6 +64,14 @@ function App(props: Props): Element<"div"> {
           <span> {book.author} </span>
           <span> {book.num_comments} </span>
           <span> {book.points} </span>
+          <span>
+            <button
+              onClick={(): void => onDismiss(book.objectID)}
+              type="button"
+            >
+              Dismiss
+            </button>
+          </span>
         </div>
       ))}
     </div>
