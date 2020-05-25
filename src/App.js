@@ -38,7 +38,16 @@ function App(): Element<"div"> {
     <div className="App">
       <h2>{helloWorld}</h2>
       {list.map(function(book: Book): Element<"div"> {
-        return <div>{book.title}</div>;
+        return (
+          <div>
+            <span>
+              <a href={book.url}>{book.title}</a>
+            </span>
+            <span> {book.author} </span>
+            <span> {book.num_comments} </span>
+            <span> {book.points} </span>
+          </div>
+        );
       })}
     </div>
   );
