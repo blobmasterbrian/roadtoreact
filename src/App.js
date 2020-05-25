@@ -1,8 +1,10 @@
 // @flow strict
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 import type { Element } from "react";
+
+type Props = {};
 
 type Book = {
   author: string,
@@ -13,7 +15,7 @@ type Book = {
   url: string
 };
 
-const list: Array<Book> = [
+const initialList: Array<Book> = [
   {
     title: "React",
     url: "https://reactjs.org/",
@@ -32,11 +34,19 @@ const list: Array<Book> = [
   }
 ];
 
-function App(): Element<"div"> {
-  const helloWorld: string = "Welcome to the Road to learn React";
+function App(props: Props): Element<"div"> {
+  const [greeting, setGreeting]: [
+    string,
+    ((string => string) | string) => void
+  ] = useState("Welcome to the Road to learn React");
+  const [list, setList]: [
+    Array<Book>,
+    (((Array<Book>) => Array<Book>) | Array<Book>) => void
+  ] = useState(initialList);
+
   return (
     <div className="App">
-      <h2>{helloWorld}</h2>
+      <h2>{greeting}</h2>
       {list.map((book: Book): Element<"div"> => (
         <div key={book.objectID}>
           <span>
