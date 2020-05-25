@@ -1,7 +1,7 @@
 # RoadToReact
 
 This repository is a run through of the Road to React book by Robin Wieruch.
-It deviates in two ways: using yarn instead of npm, and using flow on the project.
+It deviates in a few ways, namely: using yarn instead of npm, using flow on the project, and using functional components.
 
 At the bottom will be a direct running log of any relevant terminal commands run during setup.
 
