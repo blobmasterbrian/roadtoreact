@@ -37,7 +37,7 @@ function App(): Element<"div"> {
   return (
     <div className="App">
       <h2>{helloWorld}</h2>
-      {list.map(function(book: Book): Element<"div"> {
+      {list.map((book: Book): Element<"div"> => {
         return (
           <div key={book.objectID}>
             <span>
