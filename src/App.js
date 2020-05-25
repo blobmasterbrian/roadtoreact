@@ -39,7 +39,7 @@ function App(): Element<"div"> {
       <h2>{helloWorld}</h2>
       {list.map(function(book: Book): Element<"div"> {
         return (
-          <div>
+          <div key={book.objectID}>
             <span>
               <a href={book.url}>{book.title}</a>
             </span>
