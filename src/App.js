@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import type { Element } from "react";
+import type { Element, Node } from "react";
 
 type Props = {};
 
@@ -16,11 +16,13 @@ type Book = {
 };
 
 type SearchProps = {
+  children?: Node,
   onSearch: Function,
   searchTerm: string
 };
 
 type TableProps = {
+  children?: Node,
   filter: string,
   list: Array<Book>,
   onDismiss: Function
@@ -46,18 +48,22 @@ const initialList: Array<Book> = [
 ];
 
 function Search(props: SearchProps): Element<"form"> {
+  const { searchTerm, onSearch, children }: SearchProps = props;
+
   return (
     <form>
+      {children}{" "}
       <input
         type="text"
-        value={props.searchTerm}
-        onChange={(event: Event): void => props.onSearch(event)}
+        value={searchTerm}
+        onChange={(event: Event): void => onSearch(event)}
       />
     </form>
   );
 }
 
 function Table(props: TableProps): Element<"div"> {
+  const { list, filter, onDismiss }: TableProps = props;
   const matchesSearch: Function = function(
     searchTerm: string
   ): Book => boolean {
@@ -67,8 +73,7 @@ function Table(props: TableProps): Element<"div"> {
 
   return (
     <div>
-      {props.list.filter(matchesSearch(props.filter)).map((book: Book): Element<
-        "div"> => (
+      {list.filter(matchesSearch(filter)).map((book: Book): Element<"div"> => (
         <div key={book.objectID}>
           <span>
             <a href={book.url}>{book.title}</a>
@@ -78,7 +83,7 @@ function Table(props: TableProps): Element<"div"> {
           <span> {book.points} </span>
           <span>
             <button
-              onClick={(): void => props.onDismiss(book.objectID)}
+              onClick={(): void => onDismiss(book.objectID)}
               type="button"
             >
               Dismiss
@@ -113,7 +118,9 @@ function App(props: Props): Element<"div"> {
   return (
     <div className="App">
       <h2>{greeting}</h2>
-      <Search searchTerm={searchTerm} onSearch={onSearch} />
+      <Search searchTerm={searchTerm} onSearch={onSearch}>
+        Search:
+      </Search>
       <Table list={list} filter={searchTerm} onDismiss={onDismiss} />
     </div>
   );
