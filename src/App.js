@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import type { Element, FormEvent } from "react";
+import type { Element } from "react";
 
 type Props = {};
 
@@ -13,6 +13,17 @@ type Book = {
   points: number,
   title: string,
   url: string
+};
+
+type SearchProps = {
+  onSearch: Function,
+  searchTerm: string
+};
+
+type TableProps = {
+  filter: string,
+  list: Array<Book>,
+  onDismiss: Function
 };
 
 const initialList: Array<Book> = [
@@ -34,6 +45,51 @@ const initialList: Array<Book> = [
   }
 ];
 
+function Search(props: SearchProps): Element<"form"> {
+  return (
+    <form>
+      <input
+        type="text"
+        value={props.searchTerm}
+        onChange={(event: Event): void => props.onSearch(event)}
+      />
+    </form>
+  );
+}
+
+function Table(props: TableProps): Element<"div"> {
+  const matchesSearch: Function = function(
+    searchTerm: string
+  ): Book => boolean {
+    return (book: Book): boolean =>
+      book.title.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+
+  return (
+    <div>
+      {props.list.filter(matchesSearch(props.filter)).map((book: Book): Element<
+        "div"> => (
+        <div key={book.objectID}>
+          <span>
+            <a href={book.url}>{book.title}</a>
+          </span>
+          <span> {book.author} </span>
+          <span> {book.num_comments} </span>
+          <span> {book.points} </span>
+          <span>
+            <button
+              onClick={(): void => props.onDismiss(book.objectID)}
+              type="button"
+            >
+              Dismiss
+            </button>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function App(props: Props): Element<"div"> {
   const [greeting, setGreeting]: [string, Function] = useState(
     "Welcome to the Road to learn React"
@@ -41,15 +97,8 @@ function App(props: Props): Element<"div"> {
   const [list, setList]: [Array<Book>, Function] = useState(initialList);
   const [searchTerm, setSearchTerm]: [string, Function] = useState("");
 
-  const onSearch: Function = function(searchEvent: FormEvent) {
+  const onSearch: Function = function(searchEvent: SyntheticInputEvent<>) {
     setSearchTerm(searchEvent.target.value);
-  };
-
-  const matchesSearch: Function = function(
-    searchTerm: string
-  ): Book => boolean {
-    return (book: Book): boolean =>
-      book.title.toLowerCase().includes(searchTerm.toLowerCase());
   };
 
   const onDismiss: Function = function(id: number) {
@@ -64,28 +113,8 @@ function App(props: Props): Element<"div"> {
   return (
     <div className="App">
       <h2>{greeting}</h2>
-      <form>
-        <input type="text" onChange={(event: Event): void => onSearch(event)} />
-      </form>
-      {list.filter(matchesSearch(searchTerm)).map((book: Book): Element<
-        "div"> => (
-        <div key={book.objectID}>
-          <span>
-            <a href={book.url}>{book.title}</a>
-          </span>
-          <span> {book.author} </span>
-          <span> {book.num_comments} </span>
-          <span> {book.points} </span>
-          <span>
-            <button
-              onClick={(): void => onDismiss(book.objectID)}
-              type="button"
-            >
-              Dismiss
-            </button>
-          </span>
-        </div>
-      ))}
+      <Search searchTerm={searchTerm} onSearch={onSearch} />
+      <Table list={list} filter={searchTerm} onDismiss={onDismiss} />
     </div>
   );
 }
