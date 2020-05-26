@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import type { Element } from "react";
+import type { Element, FormEvent } from "react";
 
 type Props = {};
 
@@ -35,28 +35,40 @@ const initialList: Array<Book> = [
 ];
 
 function App(props: Props): Element<"div"> {
-  const [greeting, setGreeting]: [
-    string,
-    ((string => string) | string) => void
-  ] = useState("Welcome to the Road to learn React");
-  const [list, setList]: [
-    Array<Book>,
-    (((Array<Book>) => Array<Book>) | Array<Book>) => void
-  ] = useState(initialList);
+  const [greeting, setGreeting]: [string, Function] = useState(
+    "Welcome to the Road to learn React"
+  );
+  const [list, setList]: [Array<Book>, Function] = useState(initialList);
+  const [searchTerm, setSearchTerm]: [string, Function] = useState("");
 
-  function onDismiss(id: number) {
-    const hasDifferentId: Book => boolean = (book: Book): boolean => {
+  const onSearch: Function = function(searchEvent: FormEvent) {
+    setSearchTerm(searchEvent.target.value);
+  };
+
+  const matchesSearch: Function = function(
+    searchTerm: string
+  ): Book => boolean {
+    return (book: Book): boolean =>
+      book.title.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+
+  const onDismiss: Function = function(id: number) {
+    const hasDifferentId: Function = (book: Book): boolean => {
       return book.objectID !== id;
     };
 
     const updatedList: Array<Book> = list.filter(hasDifferentId);
     setList(updatedList);
-  }
+  };
 
   return (
     <div className="App">
       <h2>{greeting}</h2>
-      {list.map((book: Book): Element<"div"> => (
+      <form>
+        <input type="text" onChange={(event: Event): void => onSearch(event)} />
+      </form>
+      {list.filter(matchesSearch(searchTerm)).map((book: Book): Element<
+        "div"> => (
         <div key={book.objectID}>
           <span>
             <a href={book.url}>{book.title}</a>

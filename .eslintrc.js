@@ -32,7 +32,7 @@ module.exports = {
     "flowtype/no-mixed": 2,
     "flowtype/no-primitive-constructor-types": 2,
     "flowtype/no-unused-expressions": 2,
-    "flowtype/no-weak-types": 2,
+    "flowtype/no-weak-types": [2, { Function: false }],
     "flowtype/object-type-delimiter": 2,
     "flowtype/require-parameter-type": 2,
     "flowtype/require-return-type": 2,
