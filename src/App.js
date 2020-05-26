@@ -15,6 +15,12 @@ type Book = {
   url: string
 };
 
+type ButtonProps = {
+  children?: Node,
+  className?: string,
+  onClick: Function
+};
+
 type SearchProps = {
   children?: Node,
   onSearch: Function,
@@ -82,16 +88,22 @@ function Table(props: TableProps): Element<"div"> {
           <span> {book.num_comments} </span>
           <span> {book.points} </span>
           <span>
-            <button
-              onClick={(): void => onDismiss(book.objectID)}
-              type="button"
-            >
+            <Button onClick={(): void => onDismiss(book.objectID)}>
               Dismiss
-            </button>
+            </Button>
           </span>
         </div>
       ))}
     </div>
+  );
+}
+
+function Button(props: ButtonProps): Element<"button"> {
+  const { onClick, className, children }: ButtonProps = props;
+  return (
+    <button onClick={onClick} className={className} type="button">
+      {children}
+    </button>
   );
 }
 
