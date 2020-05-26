@@ -53,9 +53,11 @@ const initialList: Array<Book> = [
   }
 ];
 
-function Search(props: SearchProps): Element<"form"> {
-  const { searchTerm, onSearch, children }: SearchProps = props;
-
+const Search: Function = ({
+  searchTerm,
+  onSearch,
+  children
+}: SearchProps): Element<"form"> => {
   return (
     <form>
       {children}{" "}
@@ -66,15 +68,17 @@ function Search(props: SearchProps): Element<"form"> {
       />
     </form>
   );
-}
+};
 
-function Table(props: TableProps): Element<"div"> {
-  const { list, filter, onDismiss }: TableProps = props;
-  const matchesSearch: Function = function(
-    searchTerm: string
-  ): Book => boolean {
-    return (book: Book): boolean =>
-      book.title.toLowerCase().includes(searchTerm.toLowerCase());
+const Table: Function = ({
+  list,
+  filter,
+  onDismiss
+}: TableProps): Element<"div"> => {
+  const matchesSearch: Function = (searchTerm: string): Function => {
+    return function(book: Book): boolean {
+      return book.title.toLowerCase().includes(searchTerm.toLowerCase());
+    };
   };
 
   return (
@@ -96,16 +100,19 @@ function Table(props: TableProps): Element<"div"> {
       ))}
     </div>
   );
-}
+};
 
-function Button(props: ButtonProps): Element<"button"> {
-  const { onClick, className, children }: ButtonProps = props;
+const Button: Function = ({
+  onClick,
+  className,
+  children
+}: ButtonProps): Element<"button"> => {
   return (
     <button onClick={onClick} className={className} type="button">
       {children}
     </button>
   );
-}
+};
 
 function App(props: Props): Element<"div"> {
   const [greeting, setGreeting]: [string, Function] = useState(
@@ -114,11 +121,11 @@ function App(props: Props): Element<"div"> {
   const [list, setList]: [Array<Book>, Function] = useState(initialList);
   const [searchTerm, setSearchTerm]: [string, Function] = useState("");
 
-  const onSearch: Function = function(searchEvent: SyntheticInputEvent<>) {
+  const onSearch: Function = (searchEvent: SyntheticInputEvent<>) => {
     setSearchTerm(searchEvent.target.value);
   };
 
-  const onDismiss: Function = function(id: number) {
+  const onDismiss: Function = (id: number) => {
     const hasDifferentId: Function = (book: Book): boolean => {
       return book.objectID !== id;
     };
