@@ -85,13 +85,13 @@ const Table: Function = ({
     <div className="table">
       {list.filter(matchesSearch(filter)).map((book: Book): Element<"div"> => (
         <div key={book.objectID} className="table-row">
-          <span>
+          <span style={{ width: "40%" }}>
             <a href={book.url}>{book.title}</a>
           </span>
-          <span> {book.author} </span>
-          <span> {book.num_comments} </span>
-          <span> {book.points} </span>
-          <span>
+          <span style={{ width: "30%" }}> {book.author} </span>
+          <span style={{ width: "10%" }}> {book.num_comments} </span>
+          <span style={{ width: "10%" }}> {book.points} </span>
+          <span style={{ width: "10%" }}>
             <Button
               onClick={(): void => onDismiss(book.objectID)}
               className="button-inline"
