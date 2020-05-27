@@ -82,9 +82,9 @@ const Table: Function = ({
   };
 
   return (
-    <div>
+    <div className="table">
       {list.filter(matchesSearch(filter)).map((book: Book): Element<"div"> => (
-        <div key={book.objectID}>
+        <div key={book.objectID} className="table-row">
           <span>
             <a href={book.url}>{book.title}</a>
           </span>
@@ -92,7 +92,10 @@ const Table: Function = ({
           <span> {book.num_comments} </span>
           <span> {book.points} </span>
           <span>
-            <Button onClick={(): void => onDismiss(book.objectID)}>
+            <Button
+              onClick={(): void => onDismiss(book.objectID)}
+              className="button-inline"
+            >
               Dismiss
             </Button>
           </span>
@@ -135,11 +138,13 @@ function App(props: Props): Element<"div"> {
   };
 
   return (
-    <div className="App">
-      <h2>{greeting}</h2>
-      <Search searchTerm={searchTerm} onSearch={onSearch}>
-        Search:
-      </Search>
+    <div className="page">
+      <div className="interactions">
+        <h2>{greeting}</h2>
+        <Search searchTerm={searchTerm} onSearch={onSearch}>
+          Search:
+        </Search>
+      </div>
       <Table list={list} filter={searchTerm} onDismiss={onDismiss} />
     </div>
   );
