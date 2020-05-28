@@ -1,12 +1,13 @@
 // @flow strict
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 import type { Element, Node } from "react";
 
 type Props = {};
 
-type Book = {
+// Regression: need to model to match the api
+type Entry = {
   author: string,
   num_comments: number,
   objectID: number,
@@ -30,28 +31,14 @@ type SearchProps = {
 type TableProps = {
   children?: Node,
   filter: string,
-  list: Array<Book>,
+  list: Array<Entry>,
   onDismiss: Function
 };
 
-const initialList: Array<Book> = [
-  {
-    title: "React",
-    url: "https://reactjs.org/",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-  },
-  {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1
-  }
-];
+const defaultQuery: string = "redux";
+const pathBase: string = "https://hn.algolia.com/api/v1";
+const pathSearch: string = "/search";
+const paramSearch: string = "query=";
 
 function Search({
   searchTerm,
@@ -72,24 +59,27 @@ function Search({
 
 function Table({ list, filter, onDismiss }: TableProps): Element<"div"> {
   const matchesSearch: Function = (searchTerm: string): Function => {
-    return function(book: Book): boolean {
-      return book.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return function(entry: Entry): boolean {
+      return !entry.title
+        ? false
+        : entry.title.toLowerCase().includes(searchTerm.toLowerCase());
     };
   };
 
   return (
     <div className="table">
-      {list.filter(matchesSearch(filter)).map((book: Book): Element<"div"> => (
-        <div key={book.objectID} className="table-row">
+      {list.filter(matchesSearch(filter)).map((entry: Entry): Element<
+        "div"> => (
+        <div key={entry.objectID} className="table-row">
           <span style={largeColumn}>
-            <a href={book.url}>{book.title}</a>
+            <a href={entry.url}>{entry.title}</a>
           </span>
-          <span style={midColumn}> {book.author} </span>
-          <span style={smallColumn}> {book.num_comments} </span>
-          <span style={smallColumn}> {book.points} </span>
+          <span style={midColumn}> {entry.author} </span>
+          <span style={smallColumn}> {entry.num_comments} </span>
+          <span style={smallColumn}> {entry.points} </span>
           <span style={smallColumn}>
             <Button
-              onClick={(): void => onDismiss(book.objectID)}
+              onClick={(): void => onDismiss(entry.objectID)}
               className="button-inline"
             >
               Dismiss
@@ -113,25 +103,43 @@ function Button({
   );
 }
 
-function App(props: Props): Element<"div"> {
+function App(props: Props): Element<"div"> | null {
   const [greeting, setGreeting]: [string, Function] = useState(
     "Welcome to the Road to learn React"
   );
-  const [list, setList]: [Array<Book>, Function] = useState(initialList);
-  const [searchTerm, setSearchTerm]: [string, Function] = useState("");
+  const [list, setList]: [Array<Entry>, Function] = useState([]);
+  const [searchTerm, setSearchTerm]: [string, Function] = useState(
+    defaultQuery
+  );
+  const [apiResult, setApiResult]: [Object, Function] = useState(null);
 
   const onSearch: Function = (searchEvent: SyntheticInputEvent<>) => {
     setSearchTerm(searchEvent.target.value);
   };
 
   const onDismiss: Function = (id: number) => {
-    const hasDifferentId: Function = (book: Book): boolean => {
-      return book.objectID !== id;
+    const hasDifferentId: Function = (entry: Entry): boolean => {
+      return entry.objectID !== id;
     };
 
-    const updatedList: Array<Book> = list.filter(hasDifferentId);
+    const updatedList: Array<Entry> = list.filter(hasDifferentId);
     setList(updatedList);
   };
+
+  const setSearchTopStories: Function = (result) => {
+    setApiResult(result);
+  };
+
+  useEffect(() => {
+    fetch(`${pathBase}${pathSearch}?${paramSearch}${searchTerm}`)
+      .then((response: Object): Object => response.json())
+      .then((result: Object): void => setSearchTopStories(result))
+      .catch((error: Error): Error => error);
+  }, [searchTerm]);
+
+  if (!apiResult) {
+    return null;
+  }
 
   return (
     <div className="page">
@@ -141,20 +149,20 @@ function App(props: Props): Element<"div"> {
           Search:
         </Search>
       </div>
-      <Table list={list} filter={searchTerm} onDismiss={onDismiss} />
+      <Table list={apiResult.hits} filter={searchTerm} onDismiss={onDismiss} />
     </div>
   );
 }
 
-const largeColumn: { width: string } = {
+const largeColumn: Object = {
   width: "40%"
 };
 
-const midColumn: { width: string } = {
+const midColumn: Object = {
   width: "30%"
 };
 
-const smallColumn: { width: string } = {
+const smallColumn: Object = {
   width: "10%"
 };
 
