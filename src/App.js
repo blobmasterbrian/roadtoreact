@@ -81,13 +81,13 @@ function Table({ list, filter, onDismiss }: TableProps): Element<"div"> {
     <div className="table">
       {list.filter(matchesSearch(filter)).map((book: Book): Element<"div"> => (
         <div key={book.objectID} className="table-row">
-          <span style={{ width: "40%" }}>
+          <span style={largeColumn}>
             <a href={book.url}>{book.title}</a>
           </span>
-          <span style={{ width: "30%" }}> {book.author} </span>
-          <span style={{ width: "10%" }}> {book.num_comments} </span>
-          <span style={{ width: "10%" }}> {book.points} </span>
-          <span style={{ width: "10%" }}>
+          <span style={midColumn}> {book.author} </span>
+          <span style={smallColumn}> {book.num_comments} </span>
+          <span style={smallColumn}> {book.points} </span>
+          <span style={smallColumn}>
             <Button
               onClick={(): void => onDismiss(book.objectID)}
               className="button-inline"
@@ -145,5 +145,17 @@ function App(props: Props): Element<"div"> {
     </div>
   );
 }
+
+const largeColumn: { width: string } = {
+  width: "40%"
+};
+
+const midColumn: { width: string } = {
+  width: "30%"
+};
+
+const smallColumn: { width: string } = {
+  width: "10%"
+};
 
 export default App;
