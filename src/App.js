@@ -53,11 +53,11 @@ const initialList: Array<Book> = [
   }
 ];
 
-const Search: Function = ({
+function Search({
   searchTerm,
   onSearch,
   children
-}: SearchProps): Element<"form"> => {
+}: SearchProps): Element<"form"> {
   return (
     <form>
       {children}{" "}
@@ -68,13 +68,9 @@ const Search: Function = ({
       />
     </form>
   );
-};
+}
 
-const Table: Function = ({
-  list,
-  filter,
-  onDismiss
-}: TableProps): Element<"div"> => {
+function Table({ list, filter, onDismiss }: TableProps): Element<"div"> {
   const matchesSearch: Function = (searchTerm: string): Function => {
     return function(book: Book): boolean {
       return book.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -103,19 +99,19 @@ const Table: Function = ({
       ))}
     </div>
   );
-};
+}
 
-const Button: Function = ({
+function Button({
   onClick,
   className,
   children
-}: ButtonProps): Element<"button"> => {
+}: ButtonProps): Element<"button"> {
   return (
     <button onClick={onClick} className={className} type="button">
       {children}
     </button>
   );
-};
+}
 
 function App(props: Props): Element<"div"> {
   const [greeting, setGreeting]: [string, Function] = useState(
