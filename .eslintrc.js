@@ -32,10 +32,17 @@ module.exports = {
     "flowtype/no-mixed": 2,
     "flowtype/no-primitive-constructor-types": 2,
     "flowtype/no-unused-expressions": 2,
-    "flowtype/no-weak-types": [2, { Function: false, Object: false }],
+    "flowtype/no-weak-types": [2, { Object: false }],
     "flowtype/object-type-delimiter": 2,
-    "flowtype/require-parameter-type": 2,
-    "flowtype/require-return-type": 2,
+    "flowtype/require-parameter-type": [
+      2,
+      { excludeArrowFunctions: "expressionsOnly" }
+    ],
+    "flowtype/require-return-type": [
+      2,
+      "always",
+      { excludeArrowFunctions: "expressionsOnly" }
+    ],
     "flowtype/require-types-at-top": 2,
     "flowtype/require-valid-file-annotation": [
       2,

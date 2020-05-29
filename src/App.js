@@ -27,8 +27,8 @@ type ButtonProps = {
 
 type SearchProps = {
   children?: Node,
-  onChange: Event => void,
-  onSubmit: () => void,
+  onChange: (SyntheticInputEvent<>) => void,
+  onSubmit: Event => void,
   searchTerm: string
 };
 
@@ -54,7 +54,7 @@ function Search({
       <input
         type="text"
         value={searchTerm}
-        onChange={(event: Event): void => onChange(event)}
+        onChange={(event) => onChange(event)}
       />
       <button type="submit">{children}</button>
     </form>
@@ -62,8 +62,8 @@ function Search({
 }
 
 function Table({ list, onDismiss }: TableProps): Element<"div"> {
-  const matchesSearch: Function = (searchTerm: string): Function => {
-    return function(entry: Entry): boolean {
+  const matchesSearch: string => Entry => boolean = (searchTerm) => {
+    return (entry: Entry): boolean => {
       return !entry.title
         ? false
         : entry.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -107,22 +107,18 @@ function Button({
 }
 
 function App(props: Props): Element<"div"> | null {
-  const [greeting, setGreeting]: [string, Function] = useState(
+  const [greeting, setGreeting]: [string, Object] = useState(
     "Welcome to the Road to learn React"
   );
-  const [searchTerm, setSearchTerm]: [string, Function] = useState(
-    defaultQuery
-  );
-  const [apiResult, setApiResult]: [ApiResult | null, Function] = useState(
-    null
-  );
+  const [searchTerm, setSearchTerm]: [string, Object] = useState(defaultQuery);
+  const [apiResult, setApiResult]: [ApiResult | null, Object] = useState(null);
 
-  const onChange: Function = (searchEvent: SyntheticInputEvent<>) => {
+  const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
   };
 
-  const onDismiss: Function = (id: number) => {
-    const hasDifferentId: Function = (entry: Entry): boolean => {
+  const onDismiss: number => void = (id) => {
+    const hasDifferentId: Entry => boolean = (entry) => {
       return entry.objectID !== id;
     };
 
@@ -132,16 +128,16 @@ function App(props: Props): Element<"div"> | null {
     setApiResult({ ...apiResult, hits: updatedList });
   };
 
-  const setSearchTopStories: Function = (result: ApiResult) => {
+  const setSearchTopStories: ApiResult => void = (result) => {
     setApiResult(result);
   };
 
-  const onSearchSubmit: Function = (event: Event) => {
+  const onSearchSubmit: Event => void = (event) => {
     fetchSearchTopStories(searchTerm);
     event.preventDefault();
   };
 
-  const fetchSearchTopStories: Function = (searchTerm: string) => {
+  const fetchSearchTopStories: string => void = (searchTerm) => {
     fetch(`${pathBase}${pathSearch}?${paramSearch}${searchTerm}`)
       .then((response: Object): ApiResult => response.json())
       .then((result: ApiResult): void => setSearchTopStories(result))
