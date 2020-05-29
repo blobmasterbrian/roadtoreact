@@ -27,13 +27,13 @@ type ButtonProps = {
 
 type SearchProps = {
   children?: Node,
-  onSearch: Event => void,
+  onChange: Event => void,
+  onSubmit: () => void,
   searchTerm: string
 };
 
 type TableProps = {
   children?: Node,
-  filter: string,
   list: Array<Entry>,
   onDismiss: number => void
 };
@@ -45,22 +45,23 @@ const paramSearch: string = "query=";
 
 function Search({
   searchTerm,
-  onSearch,
+  onChange,
+  onSubmit,
   children
 }: SearchProps): Element<"form"> {
   return (
-    <form>
-      {children}{" "}
+    <form onSubmit={onSubmit}>
       <input
         type="text"
         value={searchTerm}
-        onChange={(event: Event): void => onSearch(event)}
+        onChange={(event: Event): void => onChange(event)}
       />
+      <button type="submit">{children}</button>
     </form>
   );
 }
 
-function Table({ list, filter, onDismiss }: TableProps): Element<"div"> {
+function Table({ list, onDismiss }: TableProps): Element<"div"> {
   const matchesSearch: Function = (searchTerm: string): Function => {
     return function(entry: Entry): boolean {
       return !entry.title
@@ -71,8 +72,7 @@ function Table({ list, filter, onDismiss }: TableProps): Element<"div"> {
 
   return (
     <div className="table">
-      {list.filter(matchesSearch(filter)).map((entry: Entry): Element<
-        "div"> => (
+      {list.map((entry: Entry): Element<"div"> => (
         <div key={entry.objectID} className="table-row">
           <span style={largeColumn}>
             <a href={entry.url}>{entry.title}</a>
@@ -117,7 +117,7 @@ function App(props: Props): Element<"div"> | null {
     null
   );
 
-  const onSearch: Function = (searchEvent: SyntheticInputEvent<>) => {
+  const onChange: Function = (searchEvent: SyntheticInputEvent<>) => {
     setSearchTerm(searchEvent.target.value);
   };
 
@@ -132,30 +132,44 @@ function App(props: Props): Element<"div"> | null {
     setApiResult({ ...apiResult, hits: updatedList });
   };
 
-  const setSearchTopStories: Function = (result) => {
+  const setSearchTopStories: Function = (result: ApiResult) => {
     setApiResult(result);
   };
 
-  useEffect(() => {
+  const onSearchSubmit: Function = (event: Event) => {
+    fetchSearchTopStories(searchTerm);
+    event.preventDefault();
+  };
+
+  const fetchSearchTopStories: Function = (searchTerm: string) => {
     fetch(`${pathBase}${pathSearch}?${paramSearch}${searchTerm}`)
       .then((response: Object): ApiResult => response.json())
       .then((result: ApiResult): void => setSearchTopStories(result))
       .catch((error: Error): Error => error);
-  }, [searchTerm]);
+  };
 
-  if (!apiResult) {
-    return null;
-  }
+  useEffect(
+    () => {
+      fetchSearchTopStories(searchTerm);
+    },
+    !apiResult ? [] : [apiResult.hits]
+  );
 
   return (
     <div className="page">
       <div className="interactions">
         <h2>{greeting}</h2>
-        <Search searchTerm={searchTerm} onSearch={onSearch}>
-          Search:
+        <Search
+          searchTerm={searchTerm}
+          onChange={onChange}
+          onSubmit={onSearchSubmit}
+        >
+          Search
         </Search>
       </div>
-      <Table list={apiResult.hits} filter={searchTerm} onDismiss={onDismiss} />
+      {!apiResult ? null : (
+        <Table list={apiResult.hits} onDismiss={onDismiss} />
+      )}
     </div>
   );
 }
