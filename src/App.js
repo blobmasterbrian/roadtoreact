@@ -6,7 +6,10 @@ import type { Element, Node } from "react";
 
 type Props = {};
 
-// Regression: need to model to match the api
+type ApiResult = {
+  hits: Array<Entry>
+};
+
 type Entry = {
   author: string,
   num_comments: number,
@@ -19,12 +22,12 @@ type Entry = {
 type ButtonProps = {
   children?: Node,
   className?: string,
-  onClick: Function
+  onClick: number => void
 };
 
 type SearchProps = {
   children?: Node,
-  onSearch: Function,
+  onSearch: Event => void,
   searchTerm: string
 };
 
@@ -32,7 +35,7 @@ type TableProps = {
   children?: Node,
   filter: string,
   list: Array<Entry>,
-  onDismiss: Function
+  onDismiss: number => void
 };
 
 const defaultQuery: string = "redux";
@@ -107,11 +110,12 @@ function App(props: Props): Element<"div"> | null {
   const [greeting, setGreeting]: [string, Function] = useState(
     "Welcome to the Road to learn React"
   );
-  const [list, setList]: [Array<Entry>, Function] = useState([]);
   const [searchTerm, setSearchTerm]: [string, Function] = useState(
     defaultQuery
   );
-  const [apiResult, setApiResult]: [Object, Function] = useState(null);
+  const [apiResult, setApiResult]: [ApiResult | null, Function] = useState(
+    null
+  );
 
   const onSearch: Function = (searchEvent: SyntheticInputEvent<>) => {
     setSearchTerm(searchEvent.target.value);
@@ -122,8 +126,10 @@ function App(props: Props): Element<"div"> | null {
       return entry.objectID !== id;
     };
 
-    const updatedList: Array<Entry> = list.filter(hasDifferentId);
-    setList(updatedList);
+    const updatedList: Array<Entry> = !apiResult
+      ? []
+      : apiResult.hits.filter(hasDifferentId);
+    setApiResult({ ...apiResult, hits: updatedList });
   };
 
   const setSearchTopStories: Function = (result) => {
@@ -132,8 +138,8 @@ function App(props: Props): Element<"div"> | null {
 
   useEffect(() => {
     fetch(`${pathBase}${pathSearch}?${paramSearch}${searchTerm}`)
-      .then((response: Object): Object => response.json())
-      .then((result: Object): void => setSearchTopStories(result))
+      .then((response: Object): ApiResult => response.json())
+      .then((result: ApiResult): void => setSearchTopStories(result))
       .catch((error: Error): Error => error);
   }, [searchTerm]);
 
