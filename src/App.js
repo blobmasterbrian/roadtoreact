@@ -113,7 +113,10 @@ function App(props: Props): Element<"div"> | null {
     "Welcome to the Road to learn React"
   );
   const [searchTerm, setSearchTerm]: [string, Object] = useState(defaultQuery);
-  const [apiResult, setApiResult]: [ApiResult | null, Object] = useState(null);
+  const [apiResult, setApiResult]: [ApiResult, Object] = useState({
+    hits: [],
+    page: 0
+  });
 
   const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
@@ -124,9 +127,7 @@ function App(props: Props): Element<"div"> | null {
       return entry.objectID !== id;
     };
 
-    const updatedList: Array<Entry> = !apiResult
-      ? []
-      : apiResult.hits.filter(hasDifferentId);
+    const updatedList: Array<Entry> = apiResult.hits.filter(hasDifferentId);
     setApiResult({ ...apiResult, hits: updatedList });
   };
 
@@ -162,7 +163,7 @@ function App(props: Props): Element<"div"> | null {
     () => {
       fetchSearchTopStories(searchTerm);
     },
-    !apiResult ? [] : [apiResult.hits]
+    apiResult.hits.length ? [] : [apiResult.hits]
   );
 
   return (
@@ -182,12 +183,7 @@ function App(props: Props): Element<"div"> | null {
       )}
       <div className="interactions">
         <Button
-          onClick={() =>
-            fetchSearchTopStories(
-              searchTerm,
-              !apiResult ? 0 : apiResult.page + 1
-            )
-          }
+          onClick={() => fetchSearchTopStories(searchTerm, apiResult.page + 1)}
         >
           More
         </Button>
