@@ -131,7 +131,12 @@ function App(props: Props): Element<"div"> | null {
   };
 
   const setSearchTopStories: ApiResult => void = (result) => {
-    setApiResult(result);
+    const { hits, page }: ApiResult = result;
+
+    const oldHits: Array<Entry> = page === 0 ? [] : apiResult.hits;
+    const updatedHits: Array<Entry> = [...oldHits, ...hits];
+
+    setApiResult({ ...apiResult, hits: updatedHits, page });
   };
 
   const onSearchSubmit: Event => void = (event) => {
