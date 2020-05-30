@@ -39,11 +39,13 @@ type TableProps = {
   onDismiss: number => void
 };
 
-const defaultQuery: string = "redux";
-const pathBase: string = "https://hn.algolia.com/api/v1";
-const pathSearch: string = "/search";
-const paramSearch: string = "query=";
-const paramPage: string = "page=";
+const DEFAULT_HPP: string = "100";
+const DEFAULT_QUERY: string = "redux";
+const PARAM_HPP: string = "hitsPerPage=";
+const PARAM_PAGE: string = "page=";
+const PARAM_SEARCH: string = "query=";
+const PATH_BASE: string = "https://hn.algolia.com/api/v1";
+const PATH_SEARCH: string = "/search";
 
 function Search({
   searchTerm,
@@ -112,7 +114,7 @@ function App(props: Props): Element<"div"> | null {
   const [greeting, setGreeting]: [string, Object] = useState(
     "Welcome to the Road to learn React"
   );
-  const [searchTerm, setSearchTerm]: [string, Object] = useState(defaultQuery);
+  const [searchTerm, setSearchTerm]: [string, Object] = useState(DEFAULT_QUERY);
   const [apiResult, setApiResult]: [ApiResult, Object] = useState({
     hits: [],
     page: 0
@@ -150,9 +152,9 @@ function App(props: Props): Element<"div"> | null {
     page = 0
   ) => {
     fetch(
-      `${pathBase}${pathSearch}?${paramSearch}${searchTerm}&${paramPage}${
+      `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${
         !page ? 0 : page
-      }`
+      }&${PARAM_HPP}${DEFAULT_HPP}`
     )
       .then((response: Object): ApiResult => response.json())
       .then((result: ApiResult): void => setSearchTopStories(result))
