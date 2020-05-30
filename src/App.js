@@ -7,7 +7,8 @@ import type { Element, Node } from "react";
 type Props = {};
 
 type ApiResult = {
-  hits: Array<Entry>
+  hits: Array<Entry>,
+  page: number
 };
 
 type Entry = {
@@ -42,6 +43,7 @@ const defaultQuery: string = "redux";
 const pathBase: string = "https://hn.algolia.com/api/v1";
 const pathSearch: string = "/search";
 const paramSearch: string = "query=";
+const paramPage: string = "page=";
 
 function Search({
   searchTerm,
@@ -137,8 +139,15 @@ function App(props: Props): Element<"div"> | null {
     event.preventDefault();
   };
 
-  const fetchSearchTopStories: string => void = (searchTerm) => {
-    fetch(`${pathBase}${pathSearch}?${paramSearch}${searchTerm}`)
+  const fetchSearchTopStories: (string, ?number) => void = (
+    searchTerm,
+    page = 0
+  ) => {
+    fetch(
+      `${pathBase}${pathSearch}?${paramSearch}${searchTerm}&${paramPage}${
+        !page ? 0 : page
+      }`
+    )
       .then((response: Object): ApiResult => response.json())
       .then((result: ApiResult): void => setSearchTopStories(result))
       .catch((error: Error): Error => error);
@@ -166,6 +175,18 @@ function App(props: Props): Element<"div"> | null {
       {!apiResult ? null : (
         <Table list={apiResult.hits} onDismiss={onDismiss} />
       )}
+      <div className="interactions">
+        <Button
+          onClick={() =>
+            fetchSearchTopStories(
+              searchTerm,
+              !apiResult ? 0 : apiResult.page + 1
+            )
+          }
+        >
+          More
+        </Button>
+      </div>
     </div>
   );
 }
