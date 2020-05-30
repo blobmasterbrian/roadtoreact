@@ -115,10 +115,13 @@ function App(props: Props): Element<"div"> | null {
     "Welcome to the Road to learn React"
   );
   const [searchTerm, setSearchTerm]: [string, Object] = useState(DEFAULT_QUERY);
-  const [apiResult, setApiResult]: [ApiResult, Object] = useState({
-    hits: [],
-    page: 0
-  });
+  const [searchedKey, setSearchedKey]: [string, Object] = useState(
+    DEFAULT_QUERY
+  );
+  const [apiResults, setApiResults]: [
+    Map<string, ApiResult>,
+    Object
+  ] = useState(new Map());
 
   const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
@@ -129,21 +132,38 @@ function App(props: Props): Element<"div"> | null {
       return entry.objectID !== id;
     };
 
-    const updatedList: Array<Entry> = apiResult.hits.filter(hasDifferentId);
-    setApiResult({ ...apiResult, hits: updatedList });
+    const cachedResult: ?ApiResult = apiResults.get(searchedKey);
+    const updatedList: Array<Entry> = cachedResult
+      ? cachedResult.hits.filter(hasDifferentId)
+      : [];
+
+    setApiResults(
+      cachedResult
+        ? new Map(
+          apiResults.set(searchTerm, { ...cachedResult, hits: updatedList })
+        )
+        : apiResults
+    );
   };
 
   const setSearchTopStories: ApiResult => void = (result) => {
     const { hits, page }: ApiResult = result;
 
-    const oldHits: Array<Entry> = page === 0 ? [] : apiResult.hits;
+    const cachedResult: ?ApiResult = apiResults.get(searchTerm);
+    const oldHits: Array<Entry> = !cachedResult ? [] : cachedResult.hits;
     const updatedHits: Array<Entry> = [...oldHits, ...hits];
 
-    setApiResult({ ...apiResult, hits: updatedHits, page });
+    setApiResults(
+      new Map(
+        apiResults.set(searchTerm, { ...cachedResult, hits: updatedHits, page })
+      )
+    );
   };
 
   const onSearchSubmit: Event => void = (event) => {
-    fetchSearchTopStories(searchTerm);
+    if (searchedKey !== searchTerm) {
+      setSearchedKey(searchTerm);
+    }
     event.preventDefault();
   };
 
@@ -151,6 +171,9 @@ function App(props: Props): Element<"div"> | null {
     searchTerm,
     page = 0
   ) => {
+    if (apiResults.get(searchedKey)) {
+      return;
+    }
     fetch(
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${
         !page ? 0 : page
@@ -161,12 +184,13 @@ function App(props: Props): Element<"div"> | null {
       .catch((error: Error): Error => error);
   };
 
-  useEffect(
-    () => {
-      fetchSearchTopStories(searchTerm);
-    },
-    apiResult.hits.length ? [] : [apiResult.hits]
-  );
+  useEffect(() => {
+    fetchSearchTopStories(searchedKey);
+  }, [searchedKey]);
+
+  const resNull: ?ApiResult = apiResults.get(searchedKey);
+  const page: number = resNull ? resNull.page : 0;
+  const list: Array<Entry> = resNull ? resNull.hits : [];
 
   return (
     <div className="page">
@@ -180,13 +204,9 @@ function App(props: Props): Element<"div"> | null {
           Search
         </Search>
       </div>
-      {!apiResult ? null : (
-        <Table list={apiResult.hits} onDismiss={onDismiss} />
-      )}
+      {!apiResults ? null : <Table list={list} onDismiss={onDismiss} />}
       <div className="interactions">
-        <Button
-          onClick={() => fetchSearchTopStories(searchTerm, apiResult.page + 1)}
-        >
+        <Button onClick={() => fetchSearchTopStories(searchedKey, page + 1)}>
           More
         </Button>
       </div>
