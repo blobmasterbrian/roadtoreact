@@ -162,7 +162,7 @@ function App(props: Props): Element<"div"> | null {
 
   const onSearchSubmit: Event => void = (event) => {
     if (searchedKey !== searchTerm) {
-      setSearchedKey(searchTerm);
+      fetchSearchTopStories(searchTerm);
     }
     event.preventDefault();
   };
@@ -171,7 +171,8 @@ function App(props: Props): Element<"div"> | null {
     searchTerm,
     page = 0
   ) => {
-    if (apiResults.get(searchedKey)) {
+    if (apiResults.get(searchTerm)) {
+      setSearchedKey(searchTerm);
       return;
     }
     fetch(
@@ -181,6 +182,7 @@ function App(props: Props): Element<"div"> | null {
     )
       .then((response: Object): ApiResult => response.json())
       .then((result: ApiResult): void => setSearchTopStories(result))
+      .then((): void => setSearchedKey(searchTerm))
       .catch((error: Error): Error => error);
   };
 
