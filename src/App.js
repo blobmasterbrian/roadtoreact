@@ -1,5 +1,6 @@
 // @flow strict
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./App.css";
 
 import type { Element, Node } from "react";
@@ -8,7 +9,7 @@ type Props = {};
 
 type ApiResult = {
   hits: Array<Entry>,
-  page: number
+  page: number,
 };
 
 type Entry = {
@@ -17,26 +18,26 @@ type Entry = {
   objectID: number,
   points: number,
   title: string,
-  url: string
+  url: string,
 };
 
 type ButtonProps = {
   children?: Node,
   className?: string,
-  onClick: number => void
+  onClick: (number) => void,
 };
 
 type SearchProps = {
   children?: Node,
   onChange: (SyntheticInputEvent<>) => void,
-  onSubmit: Event => void,
-  searchTerm: string
+  onSubmit: (Event) => void,
+  searchTerm: string,
 };
 
 type TableProps = {
   children?: Node,
   list: Array<Entry>,
-  onDismiss: number => void
+  onDismiss: (number) => void,
 };
 
 const DEFAULT_HPP: string = "100";
@@ -44,14 +45,14 @@ const DEFAULT_QUERY: string = "redux";
 const PARAM_HPP: string = "hitsPerPage=";
 const PARAM_PAGE: string = "page=";
 const PARAM_SEARCH: string = "query=";
-const PATH_BASE: string = "https://hn.algolia.com/api/v1a";
+const PATH_BASE: string = "https://hn.algolia.com/api/v1";
 const PATH_SEARCH: string = "/search";
 
 function Search({
   searchTerm,
   onChange,
   onSubmit,
-  children
+  children,
 }: SearchProps): Element<"form"> {
   return (
     <form onSubmit={onSubmit}>
@@ -66,7 +67,7 @@ function Search({
 }
 
 function Table({ list, onDismiss }: TableProps): Element<"div"> {
-  const matchesSearch: string => Entry => boolean = (searchTerm) => {
+  const matchesSearch: (string) => (Entry) => boolean = (searchTerm) => {
     return (entry: Entry): boolean => {
       return !entry.title
         ? false
@@ -101,7 +102,7 @@ function Table({ list, onDismiss }: TableProps): Element<"div"> {
 function Button({
   onClick,
   className,
-  children
+  children,
 }: ButtonProps): Element<"button"> {
   return (
     <button onClick={onClick} className={className} type="button">
@@ -128,8 +129,8 @@ function App(props: Props): Element<"div"> | null {
     setSearchTerm(searchEvent.target.value);
   };
 
-  const onDismiss: number => void = (id) => {
-    const hasDifferentId: Entry => boolean = (entry) => {
+  const onDismiss: (number) => void = (id) => {
+    const hasDifferentId: (Entry) => boolean = (entry) => {
       return entry.objectID !== id;
     };
 
@@ -147,7 +148,7 @@ function App(props: Props): Element<"div"> | null {
     );
   };
 
-  const setSearchTopStories: ApiResult => void = (result) => {
+  const setSearchTopStories: (ApiResult) => void = (result) => {
     const { hits, page }: ApiResult = result;
 
     const cachedResult: ?ApiResult = apiResults.get(searchTerm);
@@ -161,29 +162,30 @@ function App(props: Props): Element<"div"> | null {
     );
   };
 
-  const onSearchSubmit: Event => void = (event) => {
+  const onSearchSubmit: (Event) => void = (event) => {
     if (searchedKey !== searchTerm) {
       fetchSearchTopStories(searchTerm);
     }
     event.preventDefault();
   };
 
-  const fetchSearchTopStories: (string, ?number) => void = (
+  const fetchSearchTopStories: (string, number | void) => void = (
     searchTerm,
     page = 0
   ) => {
     const cachedResult: ?ApiResult = apiResults.get(searchTerm);
-    if (cachedResult && cachedResult.page == page) {
+    if (cachedResult && cachedResult.page >= page) {
       setSearchedKey(searchTerm);
       return;
     }
-    fetch(
+    axios(
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${
         !page ? 0 : page
       }&${PARAM_HPP}${DEFAULT_HPP}`
     )
-      .then((response: Object): ApiResult => response.json())
-      .then((result: ApiResult): void => setSearchTopStories(result))
+      .then((result: { data: ApiResult }): void =>
+        setSearchTopStories(result.data)
+      )
       .then((): void => setSearchedKey(searchTerm))
       .catch((error: Error): Error => setError(error));
   };
@@ -225,15 +227,15 @@ function App(props: Props): Element<"div"> | null {
 }
 
 const largeColumn: Object = {
-  width: "40%"
+  width: "40%",
 };
 
 const midColumn: Object = {
-  width: "30%"
+  width: "30%",
 };
 
 const smallColumn: Object = {
-  width: "10%"
+  width: "10%",
 };
 
 export default App;
