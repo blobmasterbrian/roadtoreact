@@ -44,7 +44,7 @@ const DEFAULT_QUERY: string = "redux";
 const PARAM_HPP: string = "hitsPerPage=";
 const PARAM_PAGE: string = "page=";
 const PARAM_SEARCH: string = "query=";
-const PATH_BASE: string = "https://hn.algolia.com/api/v1";
+const PATH_BASE: string = "https://hn.algolia.com/api/v1a";
 const PATH_SEARCH: string = "/search";
 
 function Search({
@@ -122,6 +122,7 @@ function App(props: Props): Element<"div"> | null {
     Map<string, ApiResult>,
     Object
   ] = useState(new Map());
+  const [error, setError]: [Error | null, Object] = useState(null);
 
   const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
@@ -184,7 +185,7 @@ function App(props: Props): Element<"div"> | null {
       .then((response: Object): ApiResult => response.json())
       .then((result: ApiResult): void => setSearchTopStories(result))
       .then((): void => setSearchedKey(searchTerm))
-      .catch((error: Error): Error => error);
+      .catch((error: Error): Error => setError(error));
   };
 
   useEffect(() => {
@@ -207,7 +208,13 @@ function App(props: Props): Element<"div"> | null {
           Search
         </Search>
       </div>
-      {!apiResults ? null : <Table list={list} onDismiss={onDismiss} />}
+      {error ? (
+        <div className="interactions">
+          <p>Something went wrong.</p>
+        </div>
+      ) : (
+        <Table list={list} onDismiss={onDismiss} />
+      )}
       <div className="interactions">
         <Button onClick={() => fetchSearchTopStories(searchedKey, page + 1)}>
           More
