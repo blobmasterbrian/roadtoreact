@@ -171,7 +171,8 @@ function App(props: Props): Element<"div"> | null {
     searchTerm,
     page = 0
   ) => {
-    if (apiResults.get(searchTerm)) {
+    const cachedResult: ?ApiResult = apiResults.get(searchTerm);
+    if (cachedResult && cachedResult.page == page) {
       setSearchedKey(searchTerm);
       return;
     }
