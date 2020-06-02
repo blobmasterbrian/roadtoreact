@@ -1,43 +1,19 @@
 // @flow strict
+import "./App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./App.css";
+import { Button } from "../Buttons";
+import { Search } from "../Searchs";
+import { Table } from "../Tables";
 
 import type { Element, Node } from "react";
+import type { Entry } from "../Tables";
 
 type Props = {};
 
 type ApiResult = {
   hits: Array<Entry>,
   page: number,
-};
-
-type Entry = {
-  author: string,
-  num_comments: number,
-  objectID: number,
-  points: number,
-  title: string,
-  url: string,
-};
-
-type ButtonProps = {
-  children?: Node,
-  className?: string,
-  onClick: (number) => void,
-};
-
-type SearchProps = {
-  children?: Node,
-  onChange: (SyntheticInputEvent<>) => void,
-  onSubmit: (Event) => void,
-  searchTerm: string,
-};
-
-type TableProps = {
-  children?: Node,
-  list: Array<Entry>,
-  onDismiss: (number) => void,
 };
 
 const DEFAULT_HPP: string = "100";
@@ -47,69 +23,6 @@ const PARAM_PAGE: string = "page=";
 const PARAM_SEARCH: string = "query=";
 const PATH_BASE: string = "https://hn.algolia.com/api/v1";
 const PATH_SEARCH: string = "/search";
-
-function Search({
-  searchTerm,
-  onChange,
-  onSubmit,
-  children,
-}: SearchProps): Element<"form"> {
-  return (
-    <form onSubmit={onSubmit}>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(event) => onChange(event)}
-      />
-      <button type="submit">{children}</button>
-    </form>
-  );
-}
-
-function Table({ list, onDismiss }: TableProps): Element<"div"> {
-  const matchesSearch: (string) => (Entry) => boolean = (searchTerm) => {
-    return (entry: Entry): boolean => {
-      return !entry.title
-        ? false
-        : entry.title.toLowerCase().includes(searchTerm.toLowerCase());
-    };
-  };
-
-  return (
-    <div className="table">
-      {list.map((entry: Entry): Element<"div"> => (
-        <div key={entry.objectID} className="table-row">
-          <span style={largeColumn}>
-            <a href={entry.url}>{entry.title}</a>
-          </span>
-          <span style={midColumn}> {entry.author} </span>
-          <span style={smallColumn}> {entry.num_comments} </span>
-          <span style={smallColumn}> {entry.points} </span>
-          <span style={smallColumn}>
-            <Button
-              onClick={(): void => onDismiss(entry.objectID)}
-              className="button-inline"
-            >
-              Dismiss
-            </Button>
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Button({
-  onClick,
-  className,
-  children,
-}: ButtonProps): Element<"button"> {
-  return (
-    <button onClick={onClick} className={className} type="button">
-      {children}
-    </button>
-  );
-}
 
 function App(props: Props): Element<"div"> | null {
   const [greeting, setGreeting]: [string, Object] = useState(
@@ -225,17 +138,5 @@ function App(props: Props): Element<"div"> | null {
     </div>
   );
 }
-
-const largeColumn: Object = {
-  width: "40%",
-};
-
-const midColumn: Object = {
-  width: "30%",
-};
-
-const smallColumn: Object = {
-  width: "10%",
-};
 
 export default App;
