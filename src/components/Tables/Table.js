@@ -20,7 +20,11 @@ export type Entry = {
   url: string,
 };
 
-export function Table({ list, onDismiss }: TableProps): Element<"div"> {
+export function Table({
+  children,
+  list,
+  onDismiss,
+}: TableProps): Element<"div"> {
   const matchesSearch: (string) => (Entry) => boolean = (searchTerm) => {
     return (entry: Entry): boolean => {
       return !entry.title
@@ -44,7 +48,7 @@ export function Table({ list, onDismiss }: TableProps): Element<"div"> {
               onClick={(): void => onDismiss(entry.objectID)}
               className="button-inline"
             >
-              Dismiss
+              {children}
             </Button>
           </span>
         </div>

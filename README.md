@@ -92,3 +92,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 `eslint .` - run eslint linting  
 `yarn flow status` - run flow typechecking  
 `yarn add axios` - add axios fetching  
+`yarn add --dev react-test-renderer` - add jest snapshot dependency  
+`yarn global add flow-typed` - add cli tool to install flow libdefs for untyped dependencies  
+`flow-typed install jest@26.x.x` - install libdef for jest testing  
+

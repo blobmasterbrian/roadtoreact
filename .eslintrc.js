@@ -1,20 +1,20 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true
+    es6: true,
   },
   extends: ["plugin:flowtype/recommended"],
   globals: {
     Atomics: "readonly",
-    SharedArrayBuffer: "readonly"
+    SharedArrayBuffer: "readonly",
   },
   parser: "babel-eslint",
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 2018,
-    sourceType: "module"
+    sourceType: "module",
   },
   plugins: ["react", "flowtype"],
   rules: {
@@ -36,27 +36,27 @@ module.exports = {
     "flowtype/object-type-delimiter": 2,
     "flowtype/require-parameter-type": [
       2,
-      { excludeArrowFunctions: "expressionsOnly" }
+      { excludeArrowFunctions: "expressionsOnly" },
     ],
     "flowtype/require-return-type": [
       2,
       "always",
-      { excludeArrowFunctions: "expressionsOnly" }
+      { excludeArrowFunctions: "expressionsOnly" },
     ],
     "flowtype/require-types-at-top": 2,
     "flowtype/require-valid-file-annotation": [
       2,
       "always",
-      { annotationStyle: "line", strict: true }
+      { annotationStyle: "line", strict: true },
     ],
     "flowtype/require-variable-type": 2,
     "flowtype/semi": 2,
     "flowtype/sort-keys": 2,
-    "flowtype/space-before-generic-bracket": 2
+    "flowtype/space-before-generic-bracket": 2,
   },
   settings: {
     flowtype: {
-      onlyFilesWithFlowAnnotation: false
-    }
-  }
+      onlyFilesWithFlowAnnotation: false,
+    },
+  },
 };

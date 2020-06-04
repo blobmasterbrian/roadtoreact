@@ -128,7 +128,9 @@ function App(props: Props): Element<"div"> | null {
           <p>Something went wrong.</p>
         </div>
       ) : (
-        <Table list={list} onDismiss={onDismiss} />
+        <Table list={list} onDismiss={onDismiss}>
+          Dismiss
+        </Table>
       )}
       <div className="interactions">
         <Button onClick={() => fetchSearchTopStories(searchedKey, page + 1)}>
