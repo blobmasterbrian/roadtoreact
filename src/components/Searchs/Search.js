@@ -1,6 +1,6 @@
 // @flow strict
 import "./Search.css";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import type { Element, Node } from "react";
 
@@ -17,9 +17,17 @@ export function Search({
   onSubmit,
   children,
 }: SearchProps): Element<"form"> {
+  const inputElement: Object = useRef();
+  useEffect(() => {
+    if (inputElement.current) {
+      inputElement.current.focus();
+    }
+  }, []);
+
   return (
     <form onSubmit={onSubmit}>
       <input
+        ref={inputElement}
         type="text"
         value={searchTerm}
         onChange={(event) => onChange(event)}

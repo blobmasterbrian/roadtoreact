@@ -96,4 +96,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 `yarn global add flow-typed` - add cli tool to install flow libdefs for untyped dependencies  
 `flow-typed install jest@26.x.x` - install libdef for jest testing  
 `yarn add --dev enzyme react-addons-test-utils enzyme-adapter-react-16` - install enzyme unit testing framework  
+install react developer tools plugin for chrome/firefox - allows easier tracing of state in the app when inspecting element  
 
