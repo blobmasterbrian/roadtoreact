@@ -11,7 +11,7 @@ type ButtonProps = {
 
 export function Button({
   onClick,
-  className,
+  className = "",
   children,
 }: ButtonProps): Element<"button"> {
   return (
