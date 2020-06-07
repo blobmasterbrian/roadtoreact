@@ -1,8 +1,12 @@
 // @flow strict
+import Adapter from "enzyme-adapter-react-16";
+import Enzyme, { shallow } from "enzyme";
 import React from "react";
 import renderer from "react-test-renderer";
 import { render } from "@testing-library/react";
 import { Button } from "./Button";
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe("Button", () => {
   test("renders without crashing", () => {
@@ -19,5 +23,11 @@ describe("Button", () => {
     );
     const tree: Object = component.toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  test("shows button", () => {
+    const element: Object = shallow(<Button onClick={() => {}}>Enter</Button>);
+
+    expect(element.find("button"));
   });
 });

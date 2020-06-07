@@ -1,10 +1,14 @@
 // @flow strict
+import Adapter from "enzyme-adapter-react-16";
+import Enzyme, { shallow } from "enzyme";
 import React from "react";
 import renderer from "react-test-renderer";
 import { render } from "@testing-library/react";
 import { Table } from "./Table";
 
 import type { Entry } from "./Table";
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe("Table", () => {
   const list: Array<Entry> = [
@@ -46,5 +50,15 @@ describe("Table", () => {
     );
     const tree: Object = component.toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  test("shows two items in list", () => {
+    const element: Object = shallow(
+      <Table onDismiss={() => {}} list={list}>
+        Dismiss
+      </Table>
+    );
+
+    expect(element.find(".table-row").length).toBe(2);
   });
 });
