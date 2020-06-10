@@ -3,6 +3,7 @@ import "./App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../Buttons";
+import { Loading } from "../Loadings";
 import { Search } from "../Searchs";
 import { Table } from "../Tables";
 
@@ -37,6 +38,7 @@ function App(props: Props): Element<"div"> | null {
     Object
   ] = useState(new Map());
   const [error, setError]: [Error | null, Object] = useState(null);
+  const [isLoading, setIsLoading]: [boolean, Object] = useState(true);
 
   const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
@@ -91,6 +93,7 @@ function App(props: Props): Element<"div"> | null {
       setSearchedKey(searchTerm);
       return;
     }
+    setIsLoading(true);
     axios(
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${
         !page ? 0 : page
@@ -99,7 +102,10 @@ function App(props: Props): Element<"div"> | null {
       .then((result: { data: ApiResult }): void =>
         setSearchTopStories(result.data)
       )
-      .then((): void => setSearchedKey(searchTerm))
+      .then(() => {
+        setIsLoading(false);
+        setSearchedKey(searchTerm);
+      })
       .catch((error: Error): Error => setError(error));
   };
 
@@ -133,9 +139,13 @@ function App(props: Props): Element<"div"> | null {
         </Table>
       )}
       <div className="interactions">
-        <Button onClick={() => fetchSearchTopStories(searchedKey, page + 1)}>
-          More
-        </Button>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <Button onClick={() => fetchSearchTopStories(searchedKey, page + 1)}>
+            More
+          </Button>
+        )}
       </div>
     </div>
   );
