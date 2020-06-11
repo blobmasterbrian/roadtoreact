@@ -5,6 +5,7 @@ import axios from "axios";
 import { Button } from "../Buttons";
 import { Loading, withLoading } from "../Loadings";
 import { Search } from "../Searchs";
+import { Sort } from "../Sorts";
 import { Table } from "../Tables";
 
 import type { AbstractComponent, Element, Node } from "react";
@@ -41,6 +42,13 @@ function App(props: Props): Element<"div"> | null {
   ] = useState(new Map());
   const [error, setError]: [Error | null, Object] = useState(null);
   const [isLoading, setIsLoading]: [boolean, Object] = useState(true);
+  const [sortKey, setSortKey]: [string, Object] = useState("NONE");
+  const [isSortReverse, setSortReverse]: [boolean, Object] = useState(false);
+
+  const onSort: (string) => void = (key) => {
+    setSortReverse(key === sortKey && !isSortReverse);
+    setSortKey(key);
+  };
 
   const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
@@ -136,7 +144,13 @@ function App(props: Props): Element<"div"> | null {
           <p>Something went wrong.</p>
         </div>
       ) : (
-        <Table list={list} onDismiss={onDismiss}>
+        <Table
+          list={list}
+          sortKey={sortKey}
+          isSortReverse={isSortReverse}
+          onSort={onSort}
+          onDismiss={onDismiss}
+        >
           Dismiss
         </Table>
       )}

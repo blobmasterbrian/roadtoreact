@@ -32,7 +32,13 @@ describe("Table", () => {
 
   test("renders without crashing", () => {
     const { getAllByText }: Object = render(
-      <Table onDismiss={() => {}} list={list}>
+      <Table
+        isSortReverse={false}
+        list={list}
+        onDismiss={() => {}}
+        onSort={() => {}}
+        sortKey="TITLE"
+      >
         Dismiss
       </Table>
     );
@@ -44,7 +50,13 @@ describe("Table", () => {
 
   test("has a valid snapshot", () => {
     const component: Object = renderer.create(
-      <Table onDismiss={() => {}} list={list}>
+      <Table
+        isSortReverse={false}
+        list={list}
+        onDismiss={() => {}}
+        onSort={() => {}}
+        sortKey="TITLE"
+      >
         Dismiss
       </Table>
     );
@@ -54,7 +66,13 @@ describe("Table", () => {
 
   test("shows two items in list", () => {
     const element: Object = shallow(
-      <Table onDismiss={() => {}} list={list}>
+      <Table
+        isSortReverse={false}
+        list={list}
+        onDismiss={() => {}}
+        onSort={() => {}}
+        sortKey="TITLE"
+      >
         Dismiss
       </Table>
     );
