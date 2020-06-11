@@ -1,4 +1,4 @@
 // @flow strict
-import { Loading } from "./Loading";
+import { Loading, withLoading } from "./Loading";
 
-export { Loading };
+export { Loading, withLoading };

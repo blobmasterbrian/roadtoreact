@@ -3,11 +3,11 @@ import "./App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../Buttons";
-import { Loading } from "../Loadings";
+import { Loading, withLoading } from "../Loadings";
 import { Search } from "../Searchs";
 import { Table } from "../Tables";
 
-import type { Element, Node } from "react";
+import type { AbstractComponent, Element, Node } from "react";
 import type { Entry } from "../Tables";
 
 type Props = {};
@@ -24,6 +24,8 @@ const PARAM_PAGE: string = "page=";
 const PARAM_SEARCH: string = "query=";
 const PATH_BASE: string = "https://hn.algolia.com/api/v1";
 const PATH_SEARCH: string = "/search";
+
+const ButtonWithLoading: AbstractComponent<Object> = withLoading(Button);
 
 function App(props: Props): Element<"div"> | null {
   const [greeting, setGreeting]: [string, Object] = useState(
@@ -139,13 +141,12 @@ function App(props: Props): Element<"div"> | null {
         </Table>
       )}
       <div className="interactions">
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <Button onClick={() => fetchSearchTopStories(searchedKey, page + 1)}>
-            More
-          </Button>
-        )}
+        <ButtonWithLoading
+          isLoading={isLoading}
+          onClick={() => fetchSearchTopStories(searchedKey, page + 1)}
+        >
+          More
+        </ButtonWithLoading>
       </div>
     </div>
   );

@@ -49,7 +49,12 @@ module.exports = {
       "always",
       { annotationStyle: "line", strict: true },
     ],
-    "flowtype/require-variable-type": 2,
+    "flowtype/require-variable-type": [
+      2,
+      {
+        excludeVariableMatch: "^with",
+      },
+    ],
     "flowtype/semi": 2,
     "flowtype/sort-keys": 2,
     "flowtype/space-before-generic-bracket": 2,
