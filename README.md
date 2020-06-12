@@ -98,4 +98,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 `yarn add --dev enzyme react-addons-test-utils enzyme-adapter-react-16` - install enzyme unit testing framework  
 install react developer tools plugin for chrome/firefox - allows easier tracing of state in the app when inspecting element  
 `yarn add lodash` - add lodash library  
-
+`brew tap heroku/brew && install heroku` - installs heroku cli to allow deployment of the app  
+`heroku create -b https://github.com/mars/create-react-app-buildpack.git` - set a build configuration for heroku  
+`git push heroku master` - push to heroku  
+`heroku open` - open the production build  
