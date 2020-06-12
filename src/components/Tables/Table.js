@@ -7,12 +7,6 @@ import { sortBy } from "lodash";
 
 import type { Element, Node } from "react";
 
-type TableProps = {
-  children?: Node,
-  list: Array<Entry>,
-  onDismiss: (number) => void,
-};
-
 export type Entry = {
   author: string,
   num_comments: number,
@@ -20,6 +14,12 @@ export type Entry = {
   points: number,
   title: string,
   url: string,
+};
+
+type TableProps = {
+  children?: Node,
+  list: Array<Entry>,
+  onDismiss: (number) => void,
 };
 
 const SORTS: { ... } = {
@@ -47,13 +47,6 @@ export function Table({
   const reverseSortedList: Array<Entry> = isSortReverse
     ? sortedList.reverse()
     : sortedList;
-  const matchesSearch: (string) => (Entry) => boolean = (searchTerm) => {
-    return (entry: Entry): boolean => {
-      return !entry.title
-        ? false
-        : entry.title.toLowerCase().includes(searchTerm.toLowerCase());
-    };
-  };
 
   return (
     <div className="table">

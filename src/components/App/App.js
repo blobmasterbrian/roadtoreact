@@ -3,12 +3,11 @@ import "./App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../Buttons";
-import { Loading, withLoading } from "../Loadings";
+import { withLoading } from "../Loadings";
 import { Search } from "../Searchs";
-import { Sort } from "../Sorts";
 import { Table } from "../Tables";
 
-import type { AbstractComponent, Element, Node } from "react";
+import type { AbstractComponent, Element } from "react";
 import type { Entry } from "../Tables";
 
 type Props = {};
@@ -29,7 +28,7 @@ const PATH_SEARCH: string = "/search";
 const ButtonWithLoading: AbstractComponent<Object> = withLoading(Button);
 
 function App(props: Props): Element<"div"> | null {
-  const [greeting, setGreeting]: [string, Object] = useState(
+  const [greeting]: [string, Object] = useState(
     "Welcome to the Road to learn React"
   );
   const [searchTerm, setSearchTerm]: [string, Object] = useState(DEFAULT_QUERY);
