@@ -1,6 +1,6 @@
 // @flow strict
 import "./Table.css";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../Buttons";
 import { Sort } from "../Sorts";
 import { sortBy } from "lodash";
@@ -9,11 +9,8 @@ import type { Element, Node } from "react";
 
 type TableProps = {
   children?: Node,
-  isSortReverse: boolean,
   list: Array<Entry>,
   onDismiss: (number) => void,
-  onSort: (string) => void,
-  sortKey: string,
 };
 
 export type Entry = {
@@ -35,12 +32,17 @@ const SORTS: { ... } = {
 
 export function Table({
   children,
-  isSortReverse,
   list,
   onDismiss,
-  onSort,
-  sortKey,
 }: TableProps): Element<"div"> {
+  const [sortKey, setSortKey]: [string, Object] = useState("NONE");
+  const [isSortReverse, setSortReverse]: [boolean, Object] = useState(false);
+
+  const onSort: (string) => void = (key) => {
+    setSortReverse(key === sortKey && !isSortReverse);
+    setSortKey(key);
+  };
+
   const sortedList: Array<Entry> = SORTS[sortKey](list);
   const reverseSortedList: Array<Entry> = isSortReverse
     ? sortedList.reverse()

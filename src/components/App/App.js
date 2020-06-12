@@ -42,13 +42,6 @@ function App(props: Props): Element<"div"> | null {
   ] = useState(new Map());
   const [error, setError]: [Error | null, Object] = useState(null);
   const [isLoading, setIsLoading]: [boolean, Object] = useState(true);
-  const [sortKey, setSortKey]: [string, Object] = useState("NONE");
-  const [isSortReverse, setSortReverse]: [boolean, Object] = useState(false);
-
-  const onSort: (string) => void = (key) => {
-    setSortReverse(key === sortKey && !isSortReverse);
-    setSortKey(key);
-  };
 
   const onChange: (SyntheticInputEvent<>) => void = (searchEvent) => {
     setSearchTerm(searchEvent.target.value);
@@ -144,13 +137,7 @@ function App(props: Props): Element<"div"> | null {
           <p>Something went wrong.</p>
         </div>
       ) : (
-        <Table
-          list={list}
-          sortKey={sortKey}
-          isSortReverse={isSortReverse}
-          onSort={onSort}
-          onDismiss={onDismiss}
-        >
+        <Table list={list} onDismiss={onDismiss}>
           Dismiss
         </Table>
       )}
